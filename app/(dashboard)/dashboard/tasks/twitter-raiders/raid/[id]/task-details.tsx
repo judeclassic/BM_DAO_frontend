@@ -227,6 +227,9 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
                 {
                     (raid?.timeLine !== "EXPIRED") && ( <div>
                     <h4>Proof Link</h4>
+                    <Link href={"https://postimages.org"} legacyBehavior>
+                        <a style={{ color: "#f1c618", fontWeight: 500, marginTop: "10px", display: "inline-block" }} target="_blank" title={"Upload Image"}>Upload Image Here</a>
+                    </Link>
                     <TextInput style={{ marginTop: "10px" }}>
                         <input
                             type="text"
