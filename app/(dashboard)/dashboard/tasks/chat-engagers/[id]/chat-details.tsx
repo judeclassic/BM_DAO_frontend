@@ -27,7 +27,7 @@ import uploadIcon from "../../../../../../public/upload-icon.svg";
 import imageDocIcon from "../../../../../../public/img-doc-icon.svg";
 import closeIcon from "../../../../../../public/close-icon.svg";
 import linkIcon from "../../../../../../public/link-icon.svg";
-import { getSingleTask, startRaidTask } from "@/app/api/task";
+import { completeRaidTask, getSingleRaid, getSingleTask, startRaidTask } from "@/app/api/task";
 import { getUser, setLoading, useDispatch, useSelector } from "@/lib/redux";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,7 @@ interface IProps {
     id: string
 }
 
-const TaskDetails: React.FC<IProps> = ({ id }) => {
+const ChatDetails: React.FC<IProps> = ({ id }) => {
     const [startTask, setStartTask] = useState<boolean>(false);
     const [uploadedProofs, setUploadedProofs] = useState<File[]>([]);
     const [services, setServices] = useState<any[]>([]);
@@ -47,6 +47,8 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
     const [url, setUrl] = useState<string>("");
     const [uploadedUrl, setUploadedUrl] = useState<string[]>([]);
     const [task, setTask] = useState<any>(null);
+    const [proof, setProof] = useState("");
+    const [raid, setRaid] = useState<any>(null);
     const user = useSelector(getUser);
     const dispatch = useDispatch();
     const router = useRouter();
@@ -75,6 +77,43 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
             setUploadedProofs([...uploadedProofs, file]);
         }
     };
+    const handleCompleteRaid = () => {
+        if(!proof) {
+            toast.error("Proof required", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            return;
+        }
+        dispatch(setLoading(true));
+        completeRaidTask({
+            raidId: raid?.id,
+            serviceId: user.raiderService?._id,
+            proofs: [proof]
+        }).then((res) => {
+            toast.success("Raid completed successfully", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            dispatch(setLoading(false));
+            router.push("/dashboard/tasks/twitter-raiders")
+        }).catch((e: any) => {
+            if(e?.response?.data?.error[0].message) { 
+                toast.error(e?.response?.data.error[0].message, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+                dispatch(setLoading(false));
+                return
+            }
+            if(e?.message) { 
+                toast.error(e.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+                dispatch(setLoading(false));
+                return
+            }
+            dispatch(setLoading(false));
+            return
+        })
+    }
     const handleStartTask = () => {
             if(!currentService) {
                 toast.error("Please select a service to use for this task.", {
@@ -137,7 +176,7 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
                 </TaskWrapper>
             </LeftColumn>
 
-            <RightColumn style={{ marginTop: "10px" }}>
+            {/* <RightColumn style={{ marginTop: "10px" }}>
                 <TaskSub>Twitter Raiders</TaskSub>
                 <Details>
                     <div>
@@ -362,9 +401,105 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
                         </Buttons>
                     </UploadContainer>
                 )}
+            </RightColumn> */}
+            
+            <RightColumn>
+                <TaskSub>Chat Engagers</TaskSub>
+                <Details>
+
+                    <div>
+                        <p>Minimum Message Count:</p>
+                        <BoldP>25</BoldP>
+                    </div>
+
+                    <div>
+                        <p>Task Reward:</p>
+                        <BoldP>500 BMT</BoldP>
+                    </div>
+
+                    <div>
+                        <p>Social Media:</p>
+                        <BoldP>Discord</BoldP>
+                    </div>
+
+                    <div>
+                        <p>Client’s Community Link:</p>
+                        <BoldP>www.BMDAO.com</BoldP>
+                    </div>
+                </Details>
+                <div>
+                    <h4>Select Time</h4>
+                    <TextInput style={{ marginTop: "10px" }}>
+                        <select
+                            value={currentService}
+                            onChange={(event) =>
+                                setCurrentService(event.target.value)
+                            }
+                        >
+                            <option value={""}>Select a service</option>
+                            {
+                                services.filter((s: any) => (s.accountType === "raider") && (s?.subscriptionStatus === "ACTIVE")).map((raid: any, i: number) => (
+                                    <option key={i} value={raid.id}>12:00 GMT+1 - 1:00 GMT+1</option>
+                                ))
+                            }
+                        </select>
+                    </TextInput>
+                </div>
+                {startTask || (
+                    <Instructions>
+                        <h4>Task Instruction</h4>
+                        <p>
+                            1. Join the Client’s Discord Community using the
+                            provided invite link.
+                        </p>
+                        <p>
+                            2. Engage in conversations and contribute at least
+                            25 meaningful messages within the allocated time.
+                        </p>
+                        <p>
+                            3. Ensure that your messages are relevant,
+                            respectful, and add value to the community
+                            discussions.
+                        </p>
+                        <p>
+                            4. Be active and responsive during the task duration
+                            to encourage interactions and build connections.
+                        </p>
+                        <p>
+                            5. Take screenshots as proof of completing the
+                            tasks.
+                        </p>
+                    </Instructions>
+                )}
+                {startTask || (
+                    <StartButton onClick={() => router.push(`/dashboard/tasks/chat-engagers/complete/${id}`)}>
+                        Claim Task
+                    </StartButton>
+                )}
+
+                {startTask &&  (raid?.timeLine !== "EXPIRED") && ( <div>
+                    <h4>Proof Link</h4>
+                    <TextInput style={{ marginTop: "10px" }}>
+                        <input
+                            type="text"
+                            placeholder="Enter proof image link"
+                            value={proof}
+                            onChange={(event) =>
+                                setProof(event.target.value)
+                            }
+                        />
+                    </TextInput>
+                </div>
+                )}
+                {startTask && 
+                    (raid?.timeLine !== "EXPIRED") && (
+                        <StartButton onClick={handleCompleteRaid}>
+                            Complete Raid
+                        </StartButton>
+                )}
             </RightColumn>
         </Wrapper>
     );
 };
 
-export default TaskDetails;
+export default ChatDetails;

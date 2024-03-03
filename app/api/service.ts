@@ -12,10 +12,16 @@ export const getAllRaiderServices = () => {
 export const subscribeToServiceModerator = (data: any) => {
     return axiosInstance().post("/user/worker/moderator/service/subscribe", data);
 }
+export const subscribeToServiceChatter = (data: any) => {
+    return axiosInstance().post("/user/worker/moderator/service/resubscribe", data);
+}
 export const resubscribeToServiceModerator = (data: any) => {
     return axiosInstance().post("/user/worker/moderator/service/resubscribe", data);
 }
 export const getAllModeratorServices = () => {
+    return axiosInstance().get("/user/worker/moderator/service/all?page=1&limit=20");
+}
+export const getAllChatterServices = () => {
     return axiosInstance().get("/user/worker/moderator/service/all?page=1&limit=20");
 }
 export const getAllModeratorTaskRaids = (taskId: string) => {

@@ -73,7 +73,7 @@ const UserDashboard = () => {
             </StatsCard>
           </div>
         </TaskCard>
-        {/* <StreakCard>
+        <StreakCard>
           <div className="left">
             <h2>Task Streak</h2>
             <div className="field">
@@ -118,7 +118,7 @@ const UserDashboard = () => {
               <StreakBox $isCompleted={true} />
             </div>
           </div>
-        </StreakCard> */}
+        </StreakCard>
       </CardWrapper>
       <BottomWrapper>
         <Card>

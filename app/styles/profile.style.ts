@@ -172,3 +172,21 @@ export const ModalCard = styled.div`
         cursor: pointer;
     }
 `;
+
+export const IframeModalCard = styled.div`
+    height: max-content;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    text-align: center;
+    color: #333;
+    width: 95%;
+    max-width: 800px;
+    max-height: 70dvh;
+    overflow-y: scroll;
+    .btn-wrapper {
+        display: flex;
+        padding: 10px 0;
+        justify-content: space-between;
+    }
+`;

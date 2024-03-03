@@ -33,7 +33,7 @@ const TwitterRaiders = () => {
         <Container>
             <HeadingCard heading={"Tasks"} sub={"Moderators"} />
             {
-                !loading && hasModService ? <TaskDetailsNew /> : <NotRegistered taskSub={"Moderators"} update={fetchModeratorServices} />
+                !loading ? <TaskDetailsNew /> : <NotRegistered taskSub={"Moderators"} update={fetchModeratorServices} />
             }
         </Container>
     );

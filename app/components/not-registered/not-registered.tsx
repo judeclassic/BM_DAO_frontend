@@ -8,7 +8,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 
 import image from "../../../public/not-registered.png";
-import { subscribeToServiceModerator, subscribeToServiceRaider } from "@/app/api/service";
+import { subscribeToServiceModerator, subscribeToServiceRaider , subscribeToServiceChatter } from "@/app/api/service";
 import { Modal, ModalCard } from "@/app/styles/profile.style";
 import { InputContainer, InputWrapper } from "@/app/styles/auth.style";
 
@@ -63,6 +63,18 @@ const NotRegistered: React.FC<Props> = ({ taskSub, update }) => {
                 console.log(e)
             })
         }
+        if(taskSub === "Chatters") {
+          subscribeToServiceChatter({
+              accountType: "chatter"
+          })
+          .then(() => {
+              update();
+              setShowModal(false);
+          })
+          .catch((e) => {
+              console.log(e)
+          })
+      }
     }
     return (
         <Wrapper>
