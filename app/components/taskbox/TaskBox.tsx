@@ -15,9 +15,10 @@ import documentIcon from "../../../public/document-icon.png";
 interface Props {
     heading: string;
     tasksNub: number;
+    type?: any;
 }
 
-const TaskBox: React.FC<Props> = ({ tasksNub, heading }) => {
+const TaskBox: React.FC<Props> = ({ tasksNub, heading, type }) => {
     return (
         <Wrapper>
             <ImageHolder>
@@ -27,7 +28,7 @@ const TaskBox: React.FC<Props> = ({ tasksNub, heading }) => {
                 <Heading>{heading}</Heading>
                 <TasksText>
                     <span>{tasksNub} </span>
-                    Raids
+                    {type? type : "Raids"}
                 </TasksText>
             </TaskContent>
         </Wrapper>
