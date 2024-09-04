@@ -1,5 +1,7 @@
 "use client";
 
+import { getAllClientChatterTask, getAllTotalChatTaskByStatus, getAllTotalRaidTaskByStatus } from "@/app/api/service";
+import { getAllClientRaiderTask } from "@/app/api/task";
 import { getUserTransactionHistory } from "@/app/api/wallet";
 import HeadingCard from "@/app/components/heading-card/heading-card";
 import { ArrowDownIcon, DocumentIcon } from "@/app/components/svg-icons";
@@ -34,7 +36,53 @@ const Dashboard = () => {
     const user = useSelector(getUser);
     const [changeCurrency, setChangeCurrency] = useState<boolean>(false);
     const [history, setHistory] = useState<any>([]);
+    const [totalUploadEdTask, setTotalUploadEdTask] = useState(0);
+    const [totalCompletedTask, setTotalCompletedTask] = useState(0);
+    const [totalUploadRaid, setTotalUploadRaid] = useState(0);
+    const [totalUploadChat, setTotalUploadChat] = useState(0);
+    const [totalCompletedRaid, setTotalCompletedRaid] = useState(0);
+    const [totalCompletedChat, setTotalCompletedChat] = useState(0);
+
     const router = useRouter();
+
+    const fetchTasks = () => {
+        getAllClientRaiderTask(10, 1)
+        .then((res) => {
+            // setTasks(res.data.data.tasks);
+            // setPages(generatePages(res.data.data.totalTasks, limit, currentPage))
+            // setNumberOfPages(Math.ceil(res.data.data.totalTasks/limit));
+
+            setTotalUploadRaid(res.data.data.totalTasks)
+        })
+        .catch((res) => {
+
+        })
+
+        getAllClientChatterTask(0, 50)
+        .then((res) => {
+            setTotalUploadChat(res.data.data.totalTasks)
+        })
+        .catch((res) => {
+
+        })
+
+        getAllTotalChatTaskByStatus('APPROVED')
+        .then((res) => {
+            setTotalCompletedChat(res.data.data)
+        })
+        .catch((res) => {
+
+        })
+
+        getAllTotalRaidTaskByStatus(1, 2, 'APPROVED')
+        .then((res) => {
+            setTotalCompletedRaid(res.data.data.totalRaids)
+        })
+        .catch((res) => {
+
+        })
+    }
+
     const fetchHistory = () => {
         getUserTransactionHistory(10, 1)
         .then((res) => {
@@ -43,9 +91,10 @@ const Dashboard = () => {
         .catch((e) => {
           console.log(e)
         })
-      }
+    }
     useEffect(() => {
-      fetchHistory();
+        fetchTasks()
+        fetchHistory();
     }, [])
     return (
         <Container>
@@ -80,7 +129,8 @@ const Dashboard = () => {
                                         <DocumentIcon />
                                         <p>Completed</p>
                                     </div>
-                                    <h2>{user.analytics?.totalCompleted ?? "0"}</h2>
+                                    {/* <h2>{user.analytics?.totalCompleted ?? "0"}</h2> */}
+                                    <h2>{totalCompletedChat + totalCompletedRaid}</h2>
                                 </StatsCard>
                                 <div className="divider"></div>
                                 <StatsCard>
@@ -88,7 +138,8 @@ const Dashboard = () => {
                                         <DocumentIcon />
                                         <p>Uploaded</p>
                                     </div>
-                                    <h2>{user.analytics?.totalUploaded ?? "0"}</h2>
+                                    {/* <h2>{user.analytics?.totalUploaded ?? "0"}</h2> */}
+                                    <h2>{totalUploadChat + totalUploadRaid}</h2>
                                 </StatsCard>
                             </div>
                         </ClientTaskCard>

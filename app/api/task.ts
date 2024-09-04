@@ -24,6 +24,6 @@ export const getSingleRaid = (raidId: string) => {
 export const getSingleModeratorRaid = (raidId: string) => {
     return axiosInstance().get(`/user/worker/moderator/task/raider/raid/${raidId}`);
 }
-export const getAllClientTask = (limit: any, page: any) => {
+export const getAllClientRaiderTask = (limit: any, page: any) => {
     return axiosInstance().get(`/user/client/raider/getusertasks?limit=${limit}&page=${page}`)
 }

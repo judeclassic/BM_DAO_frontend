@@ -89,7 +89,6 @@ const TaskDetails: React.FC = () => {
     const totalPending = () => {
         getTotalStatusTask('STARTED')
         .then((res) => {
-            console.log("res", res.data.data)
             setTotalPendingTask(res.data.data);
         })
         .catch((res) => {
@@ -99,7 +98,6 @@ const TaskDetails: React.FC = () => {
     const totalCompleted = () => {
         getTotalStatusTask('COMPLETED')
         .then((res) => {
-            console.log("res", res.data.data)
             setTotalCompletedTask(res.data.data);
         })
         .catch((res) => {

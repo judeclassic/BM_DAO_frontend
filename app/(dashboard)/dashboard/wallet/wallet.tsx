@@ -33,6 +33,10 @@ import { getUserTransactionHistory } from "@/app/api/wallet";
 import { getUserProfile } from "@/app/api/auth";
 import { Pagination } from "@/app/styles/client-moderators.style";
 import { generatePages } from "@/lib/utils";
+import DepositeTask from "./deposit";
+import WithdrawTask from "./withraw";
+import TransferTask from "./transfer";
+import { bmdaoTokenBalance } from "@/app/api/service";
 
 const Wallet = () => {
     const [changeCurrency, setChangeCurrency] = useState<boolean>(false);
@@ -46,6 +50,9 @@ const Wallet = () => {
     const [refetch, setRefetch] = useState(false);
     const [showWithdraw, setShowWithdraw] = useState(false);
     const [showDeposit, setShowDeposit] = useState(false);
+    const [showTransfer, setShowTransfer] = useState(false);
+    const [userProfile, setUserProfile] = useState<any>('')
+    const [tokenBalance, setTokenBalance] = useState<any>('')
     const handleChangePage = (page: number) => {
         if((page !== currentPage) && (page > 0) && (page <= numberOfPages)) {
             setCurrentPage(page);
@@ -62,9 +69,32 @@ const Wallet = () => {
         .catch((e) => {
           console.log(e)
         })
-      }
+    }
+
+    const userProfilee = () => {
+        getUserProfile()
+        .then((res) => {
+            setUserProfile(res.data.data)
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    }
+
+    const fetchbmdaoTokenbalance = () => {
+        bmdaoTokenBalance()
+        .then((res) => {
+            setTokenBalance(res.data.data.balance)
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    }
+    
     useEffect(() => {
       fetchHistory();
+      userProfilee()
+      fetchbmdaoTokenbalance()
     }, [])
     
     return (
@@ -105,10 +135,10 @@ const Wallet = () => {
                         <div>
                             <div className="content">
                                 <Image src={chart} alt="chart icon" />
-                                Total Income
+                                Cryto Balance
                             </div>
 
-                            <div className="price">$0</div>
+                            <div className="price">{tokenBalance} BMT</div>
                         </div>
 
                         <div className="stroke"></div>
@@ -116,31 +146,36 @@ const Wallet = () => {
                         <div>
                             <div className="content">
                                 <Image src={chart} alt="chart icon" />
-                                Total Withdrawn
+                                Web2 Balance
                             </div>
 
-                            <div className="price">$0</div>
+                            <div className="price">{(Number(user?.wallet?.balance?.totalBalance ?? "0") * 1000).toFixed(2)} BMT</div>
                         </div>
                     </TotalCard>
                 </BalanceCards>
 
                 <Buttons>
-                    <button>
+                    <button   onClick={() => setShowWithdraw(true)}>
                         <WithdrawIcon /> Withdraw
+                        
                     </button>
-                    <button>
+                    <button  onClick={() => setShowDeposit(true)}>
                         <DepositIcon /> Deposit
                     </button>
+                    <button  onClick={() => setShowTransfer(true)}>
+                        <DepositIcon /> Transfer
+                    </button>
                 </Buttons>
+                <p>{userProfile?.wallet?.wallet?.address}</p>
 
                 <WalletMobileTotalCard>
                     <div>
                         <div className="content">
                             <Image src={chart} alt="chart icon" />
-                            Total Income
+                            Cryto Balance
                         </div>
 
-                        <div className="price">$0</div>
+                        <div className="price">{tokenBalance} BMT</div>
                     </div>
 
                     <div className="stroke"></div>
@@ -148,10 +183,10 @@ const Wallet = () => {
                     <div>
                         <div className="content">
                             <Image src={chart} alt="chart icon" />
-                            Total Withdrawn
+                            Web2 Balance
                         </div>
 
-                        <div className="price">$0</div>
+                        <div className="price">{(Number(user?.wallet?.balance?.totalBalance ?? "0") * 1000).toFixed(2)} BMT</div>
                     </div>
                 </WalletMobileTotalCard>
             </BalanceContainer>
@@ -231,14 +266,15 @@ const Wallet = () => {
                 </Pagination>
             </History>
             {
-                showWithdraw && (
-                    <></>
-                )
+                showWithdraw && <WithdrawTask setShowModal={setShowWithdraw} setRefetch={setRefetch} refetch={refetch}/>
             }
             {
-                showDeposit && (
-                    <></>
-                )
+                showDeposit && <DepositeTask setShowModal={setShowDeposit} setRefetch={setRefetch} refetch={refetch}/>
+                    
+            }
+            {
+                showTransfer && <TransferTask setShowModal={setShowTransfer} setRefetch={setRefetch} refetch={refetch}/>
+                    
             }
         </Container>
     );

@@ -61,10 +61,26 @@ export interface IUserRegister {
     username: string;
     password: string;
     country: string;
-    referalCode: string;
+    referralCode: string;
     phoneNumber: string;
 }
 export interface IUserLogin {
     emailAddress: string;
     password: string;
+}
+
+export interface IVerifyEmail {
+    emailAddress: string;
+    code: number;
+}
+
+export interface IForgotPassword {
+    emailAddress: string;
+}
+
+export interface IResetPassword {
+    emailAddress: string;
+    code: string;
+    password: string;
+    confirmPassword: string;
 }

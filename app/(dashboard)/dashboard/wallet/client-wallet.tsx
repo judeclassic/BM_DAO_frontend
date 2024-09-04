@@ -123,6 +123,7 @@ const Wallet = () => {
                     </button>
                 </Buttons>
 
+
                 <WalletMobileTotalCard>
                     <div>
                         <div className="content">

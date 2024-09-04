@@ -58,15 +58,16 @@ const Register = () => {
         name: fullname,
         emailAddress: email,
         username,
-        referalCode: referralCode,
+        referralCode: referralCode,
         country,
         accountType: accountType,
         password,
         phoneNumber: phone,
       }).then((res) => {
-        dispatch(setUser(res.data.data))
-        localStorage.setItem("bmdao-token", res.data.data.accessToken);
-        router.push("/dashboard");
+        // dispatch(setUser(res.data.data))
+        // localStorage.setItem("bmdao-token", res.data.data.accessToken);
+        // router.push("/dashboard");
+        router.push("/verifyEmail");
         dispatch(setLoading(false));
       }).catch((e: any) => {
         toast.error(e?.response?.data.error[0].message, {
