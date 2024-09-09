@@ -184,6 +184,10 @@ export const bmdaoTokenBalance = () => {
     return axiosInstance().get(`/user/personal/wallet/token/balance`);
 }
 
+export const nativeTokenBalance = () => {
+    return axiosInstance().get(`/user/personal/wallet/native/token/balance`);
+}
+
 
 
 

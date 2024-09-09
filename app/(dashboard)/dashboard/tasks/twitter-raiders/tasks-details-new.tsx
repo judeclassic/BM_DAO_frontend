@@ -68,7 +68,7 @@ const TaskDetailsNew = () => {
             case "Create a Tweet":
                 return 0.1
             case "Like Post":
-                return 0.005
+                return 0.007
             case "Raid":
                 return 0.15
             case "Follow Account":

@@ -36,7 +36,7 @@ import { generatePages } from "@/lib/utils";
 import DepositeTask from "./deposit";
 import WithdrawTask from "./withraw";
 import TransferTask from "./transfer";
-import { bmdaoTokenBalance } from "@/app/api/service";
+import { bmdaoTokenBalance, nativeTokenBalance } from "@/app/api/service";
 
 const Wallet = () => {
     const [changeCurrency, setChangeCurrency] = useState<boolean>(false);
@@ -53,6 +53,7 @@ const Wallet = () => {
     const [showTransfer, setShowTransfer] = useState(false);
     const [userProfile, setUserProfile] = useState<any>('')
     const [tokenBalance, setTokenBalance] = useState<any>('')
+    const [nativeToken, setNativeToken] = useState<any>('')
     const handleChangePage = (page: number) => {
         if((page !== currentPage) && (page > 0) && (page <= numberOfPages)) {
             setCurrentPage(page);
@@ -87,7 +88,18 @@ const Wallet = () => {
             setTokenBalance(res.data.data.balance)
         })
         .catch((e) => {
-          console.log(e)
+          console.log('Error', e)
+        })
+    }
+
+    const fetchNativeTokenbalance = () => {
+        nativeTokenBalance()
+        .then((res: any) => {
+            console.log('rss', res.data.data.balance)
+            setNativeToken(res.data.data.balance)
+        })
+        .catch((e: any) => {
+            console.log('Error', e)
         })
     }
     
@@ -95,6 +107,7 @@ const Wallet = () => {
       fetchHistory();
       userProfilee()
       fetchbmdaoTokenbalance()
+      fetchNativeTokenbalance()
     }, [])
     
     return (
@@ -105,7 +118,7 @@ const Wallet = () => {
                     <div className="top">
                         <div>
                             <p>Wallet Balance</p>
-                            <h1>${Number(user?.wallet?.balance?.totalBalance ?? "0").toFixed(2)}</h1>
+                            <h1>${Number(user?.wallet?.balance?.totalBalance ?? "0").toFixed(4)}</h1>
                         </div>
                         <button>
                             <span>BMT</span>
@@ -120,7 +133,7 @@ const Wallet = () => {
                         <p>USD</p>
                         <div>
                             <p>Available Balance</p>
-                            <Amount>${Number(user?.wallet?.balance?.totalBalance ?? "0").toFixed(2)}</Amount>
+                            <Amount>${Number(user?.wallet?.balance?.totalBalance ?? "0").toFixed(4)}</Amount>
                         </div>
                     </BalanceCard>
 
@@ -135,7 +148,7 @@ const Wallet = () => {
                         <div>
                             <div className="content">
                                 <Image src={chart} alt="chart icon" />
-                                Cryto Balance
+                                Cryto BMT Balance
                             </div>
 
                             <div className="price">{tokenBalance} BMT</div>
@@ -146,10 +159,9 @@ const Wallet = () => {
                         <div>
                             <div className="content">
                                 <Image src={chart} alt="chart icon" />
-                                Web2 Balance
+                                Matic Balance
                             </div>
-
-                            <div className="price">{(Number(user?.wallet?.balance?.totalBalance ?? "0") * 1000).toFixed(2)} BMT</div>
+                            <div className="price">{(parseFloat(nativeToken)).toFixed(4)} Matic</div>
                         </div>
                     </TotalCard>
                 </BalanceCards>
@@ -172,7 +184,7 @@ const Wallet = () => {
                     <div>
                         <div className="content">
                             <Image src={chart} alt="chart icon" />
-                            Cryto Balance
+                            Cryto BMT Balance
                         </div>
 
                         <div className="price">{tokenBalance} BMT</div>
@@ -183,10 +195,10 @@ const Wallet = () => {
                     <div>
                         <div className="content">
                             <Image src={chart} alt="chart icon" />
-                            Web2 Balance
+                            Matic Balance
                         </div>
 
-                        <div className="price">{(Number(user?.wallet?.balance?.totalBalance ?? "0") * 1000).toFixed(2)} BMT</div>
+                        <div className="price">{Number(nativeToken ?? "0").toFixed(4)} Matic</div>
                     </div>
                 </WalletMobileTotalCard>
             </BalanceContainer>

@@ -85,10 +85,7 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
             setImgTask(task?.[currentTaskIndex]?.proofs)
             dispatch(setLoading(false));
         })
-        // setCurrentTaskIndex((prevIndex) => (prevIndex + 1) % task.length);
-        // setCurrentIndex(0)
-        // setImgTask(task?.[currentTaskIndex]?.proofs)
-        // console.log('image', task?.[currentTaskIndex]?.proofs)
+        
     }
 
     const handleRejectTask = () => {
@@ -140,8 +137,8 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
     return (
         <Wrapper>
         <LeftColumn>
-            <TaskImageWrapper style={{ marginTop: "60px" }}>
-                <img style={{height: "100%"}} src={imgTask?.[currentIndex]} alt={`Image ${currentIndex}`} />
+            <TaskImageWrapper style={{ marginTop: "60px", height: "100%", width: "90%" }}>
+                <img style={{height: "100%", width: "100%"}} src={imgTask?.[currentIndex]} alt={`Image ${currentIndex}`} />
             </TaskImageWrapper>
             <div style={{ display: "flex", justifyContent: "space-between", gap:"10px" }}>
                     <StartButton onClick={prevImage} disabled={currentIndex === 0}>Prev</StartButton>
@@ -163,7 +160,7 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
                     {/* {task?.map((chat: any) => (
                         <BoldP>{chat.taskId.chatInformation.compaignCaption}</BoldP>
                     ))} */}
-                    <BoldP>0.02</BoldP>
+                    <BoldP>0.1</BoldP>
                 </div>
 
                 <div>

@@ -150,7 +150,7 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
         </LeftColumn>
 
         <RightColumn style={{ marginTop: "10px" }}>
-            <TaskSub>Chatter</TaskSub>
+            <TaskSub>Raider</TaskSub>
              <Details>
 
                 <div>
@@ -160,7 +160,7 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
 
                 <div>
                     <p>Task Reward:</p>
-                    <BoldP>0.02</BoldP>
+                    <BoldP>0.002</BoldP>
                 </div>
 
                 <div>

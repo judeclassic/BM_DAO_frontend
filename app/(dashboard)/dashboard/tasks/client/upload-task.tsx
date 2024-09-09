@@ -160,17 +160,17 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
     const getPrice = (type: ActionType): number => {
         switch (type) {
             case "Comment on Post":
-                return Number(raidersNumber) * 0.045
+                return Number(raidersNumber) * 0.1
             case "Create a Tweet":
                 return Number(raidersNumber) * 0.25
             case "Like Post":
-                return Number(raidersNumber) * 0.01
+                return Number(raidersNumber) * 0.02
             case "Raid":
                 return Number(raidersNumber) * 0.3
             case "Follow Account":
-                return Number(raidersNumber) * 0.015
+                return Number(raidersNumber) * 0.02
             case "Retweet Post":
-                return Number(raidersNumber) * 0.18
+                return Number(raidersNumber) * 0.02
             default:
                 return 0;
         }

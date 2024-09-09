@@ -540,7 +540,7 @@ const Profile = () => {
         showModal &&
         (<Modal>
           <ModalCard>
-            <p>You are about to subscribe for a {(currentTask === 1) && "raid"}{(currentTask === 2) && "moderator"}{(currentTask === 3) && "chatter"} package for $10</p>
+            <p>You are about to subscribe for a {(currentTask === 1) && "raid"}{(currentTask === 2) && "moderator"}{(currentTask === 3) && "chatter"} package for ${currentTask == 2 ? 50 : 5 }</p>
             <div style={{ display: "flex", flexDirection: "column", margin: "20px 0", textAlign: "left" }}>
               <InputWrapper>
                 <label>Twitter</label>
