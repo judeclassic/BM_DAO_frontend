@@ -15,6 +15,7 @@ import {
 import { createRaidTask } from "@/app/api/task";
 import { setLoading, useDispatch } from "@/lib/redux";
 import { toast } from "react-toastify";
+import { createChatTask } from "@/app/api/chat";
 
 interface Props {
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,16 +26,21 @@ interface Props {
 type ActionType = "Create a Tweet" | "Comment on Post" | "Follow Account" | "Retweet Post" | "Like Post" | "Raid";
 
 const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
-    const [taskType, setTaskType] = useState<string>("twitter-raider");
+    const [taskType, setTaskType] = useState<string>("chat-engager");
     const [raidersNumber, setRaidersNumber] = useState("");
-    const [weeks, setWeeks] = useState("");
-    const [dailyPost, setDailyPost] = useState("");
     const [startDate, setStartDate] = useState("");
     const [raidLink, setRaidLink] = useState("");
     const [actions, setActions] = useState<string[]>([]);
     const [action, setAction] = useState<ActionType>("Follow Account")
     const [caption, setCaption] = useState("");
     const [mediaLink, setMediaLink] = useState("");
+
+    const [postLink, setPostLink] = useState("")
+    const [compaignCaption, setCompaignCaption] = useState("")
+    const [chatterPerSession, setChatterPerSession] = useState(0)
+    const [compaignDay, setCompaignDay] = useState(1)
+    const [hoursPerDay, setHoursPerDay] = useState(1)
+
     const toggleAction = (action: string) => {
         setActions((prev) => {
             const copyOfPrev = [...prev];
@@ -97,6 +103,49 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                 dispatch(setLoading(false));
             })
         }
+        if(taskType === "chat-engager") {
+            console.log("chatterPerSession: ", compaignCaption);
+
+            if(!postLink || !chatterPerSession || !hoursPerDay || !startDate) {
+              toast.error("Fill in required fields", {
+                position: toast.POSITION.TOP_RIGHT
+              });
+              return;
+            }
+            dispatch(setLoading(true));
+            createChatTask({
+                serviceType: "chatter",
+                postLink: postLink,
+                compaignCaption: compaignCaption,
+                chatterPerSession: chatterPerSession,
+                hoursPerDay: hoursPerDay,
+                startDate: (new Date(startDate)).toISOString(),
+                days: compaignDay
+            }).then((res) => {
+                toast.success("Chatter task created successfully", {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+                setShowModal(false);
+                dispatch(setLoading(false));
+                setRefetch(!refetch);
+            }).catch((e: any) => {
+                if(e?.response?.data?.error[0].message) {
+                    toast.error(e?.response?.data?.error[0].message, {
+                      position: toast.POSITION.TOP_RIGHT
+                    });
+                    dispatch(setLoading(false));
+                    return
+                }
+                if(e?.message) {
+                    toast.error(e?.message, {
+                      position: toast.POSITION.TOP_RIGHT
+                    });
+                    dispatch(setLoading(false));
+                    return
+                }
+                dispatch(setLoading(false));
+            })
+        }
     }
 
     const getPrice = (type: ActionType): number => {
@@ -132,10 +181,10 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                         id="task-type"
                                         onChange={(e) => changeTaskType(e)}
                                     >
-                                        {/* <option value="chat-engager">
+                                        <option value="chat-engager">
                                             Chat Engager
                                         </option>
-                                        <option value="collab-manager">
+                                        {/* <option value="collab-manager">
                                             Collab Manager
                                         </option> */}
                                         <option value="twitter-raider">
@@ -159,6 +208,7 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                             id="hours-of-engagement"
                                             type="text"
                                             placeholder=""
+                                            onChange={(e) => setHoursPerDay(parseInt(e.target.value))}
                                         />
                                     </label>
 
@@ -169,6 +219,7 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                             id="campaign-day"
                                             type="text"
                                             placeholder=""
+                                            onChange={(e) => setCompaignDay(parseInt(e.target.value))}
                                         />
                                     </label>
                                 </div>
@@ -180,11 +231,12 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                             <select
                                                 name="active-chatters"
                                                 id="active-chatters"
+                                                onChange={(e) => setChatterPerSession(parseInt(e.target.value))}
                                             >
                                                 <option value="1">1</option>
-                                                <option value="2">5</option>
-                                                <option value="3">15</option>
-                                                <option value="4">20</option>
+                                                <option value="5">5</option>
+                                                <option value="15">15</option>
+                                                <option value="20">20</option>
                                             </select>
                                             <Image
                                                 src={dropdon_icon}
@@ -232,6 +284,32 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                             id="community-link"
                                             type="text"
                                             placeholder=""
+                                            onChange={(e) => setPostLink(e.target.value)}
+                                        />
+                                    </label>
+                                    <label htmlFor="raid-start" className="full-width">
+                                        <h4>Start date</h4>
+                                        <input
+                                            id="raid-start"
+                                            type="datetime-local"
+                                            placeholder=""
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                        />
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <label
+                                        htmlFor="campaign-caption"
+                                        className="full-width"
+                                    >
+                                        <h4>Campaign Caption</h4>
+
+                                        <textarea
+                                            id="campaign-caption"
+                                            placeholder=""
+                                            onChange={(e) => setCompaignCaption(e.target.value)}
                                         />
                                     </label>
                                 </div>

@@ -1,5 +1,7 @@
 import { axiosInstance } from "./axios";
 
+
+// FOR MODERATORS
 export const getAllModeratorTask = (limit: any, page: any) => {
     return axiosInstance().get(`/user/worker/moderator/task/raider/other?limit=${limit}&page=${page}`);
 }

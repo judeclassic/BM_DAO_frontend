@@ -15,7 +15,7 @@ const ChatEngagers = () => {
     const fetchChatterServices = () => {
         getAllChatterServices()
         .then((res) => {
-          setHasChatService(!!res.data.data.userServices.filter((s: any) => s.accountType === "moderators").length);
+          setHasChatService(!!res.data.data.userServices.filter((s: any) => s.accountType === "chatter").length);
           dispatch(setLoading(false));
         }).catch((e: any) => {
           toast.error(e?.response?.data.error[0].message, {
@@ -31,7 +31,7 @@ const ChatEngagers = () => {
         <Container>
             <HeadingCard heading={"Tasks"} sub={"Chat Engagers"} />
             {
-                !loading ? <TaskDetails /> : <NotRegistered taskSub={"Moderators"} update={fetchChatterServices} />
+                !loading ? <TaskDetails /> : <NotRegistered taskSub={"chatter"} update={fetchChatterServices} />
             }
         </Container>
     );
