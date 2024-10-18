@@ -39,6 +39,8 @@ import closeIcon from "../../../../../public/close-icon.svg";
 import { useRouter } from "next/navigation";
 import { getAllChatCompletedTask, getAllChatOngoingTask, getAllChatTask } from "@/app/api/moderator";
 import { getUser, useSelector } from "@/lib/redux";
+import { availbleChatterTask, getChatterTask, getSingleChatterTask, getStatusTask, getTotalStatusTask } from "@/app/api/service";
+import { AxiosResponse } from "axios";
 
 
 const TaskDetails: React.FC = () => {
@@ -51,29 +53,54 @@ const TaskDetails: React.FC = () => {
     const [pending, setPending] = useState<any>([]);
     const router = useRouter();
     const user = useSelector(getUser);
+    const [totalAvailbleTask, setTotalAvailbleTask] = useState<any>(0);
+    const [totalPendingTask, setTotalPendingTask] = useState<any>(0);
+    const [totalCompletedTask, setTotalCompletedTask] = useState<any>(0);
 
 
     const fetchTasks = () => {
-        getAllChatTask(20, 1)
+        availbleChatterTask(100, 1, "PENDING")
         .then((res) => {
-            setAvailable(res.data.data.tasks);
+            setAvailable(res.data.data.data)
+            setTotalAvailbleTask(res.data.data.totalTask)
         })
         .catch((res) => {
-
+           
         })
     }
     const fetchPending = () => {
-        getAllChatOngoingTask(20, 1)
+        getStatusTask('STARTED')
         .then((res) => {
-            setPending(res.data.data.tasks);
+            console.log("res", res.data.data)
+            setPending(res.data.data);
         })
         .catch((res) => {
         })
     }
-    const fetchCompletedRaids = () => {
-        getAllChatCompletedTask(20, 1)
+    const fetchCompletedChats = () => {
+        getStatusTask('COMPLETED')
         .then((res) => {
-            setCompleted(res.data.data.tasks);
+            setCompleted(res.data.data);
+        })
+        .catch((res) => {
+        })
+    }
+
+    const totalPending = () => {
+        getTotalStatusTask('STARTED')
+        .then((res) => {
+            console.log("res", res.data.data)
+            setTotalPendingTask(res.data.data);
+        })
+        .catch((res) => {
+        })
+    }
+
+    const totalCompleted = () => {
+        getTotalStatusTask('COMPLETED')
+        .then((res) => {
+            console.log("res", res.data.data)
+            setTotalCompletedTask(res.data.data);
         })
         .catch((res) => {
         })
@@ -81,7 +108,9 @@ const TaskDetails: React.FC = () => {
     useEffect(() => {
       fetchPending();
       fetchTasks();
-      fetchCompletedRaids();
+      fetchCompletedChats();
+      totalPending();
+      totalCompleted()
     }, [])
 
     const handleDrop = (event: DragEvent<HTMLDivElement>) => {
@@ -104,9 +133,9 @@ const TaskDetails: React.FC = () => {
         <Wrapper>
             <LeftColumn>
                 <TaskWrapper>
-                    <TaskBox heading={"Available Tasks"} tasksNub={user?.moderatorService?.analytics.availableTask ?? 0} />
-                    <TaskBox heading={"Pending Tasks"} tasksNub={user?.moderatorService?.analytics.pendingTask ?? 0} />
-                    <TaskBox heading={"Completed Tasks"} tasksNub={user?.moderatorService?.analytics.completedTask ?? 0} />
+                    <TaskBox heading={"Available Tasks"} tasksNub={ totalAvailbleTask? totalAvailbleTask : 0} type={"Chats"}/>
+                    <TaskBox heading={"Pending Tasks"} tasksNub={totalPendingTask? totalPendingTask : 0} type={"Chats"}/>
+                    <TaskBox heading={"Completed Tasks"} tasksNub={totalCompletedTask? totalCompletedTask: 0} type={"Chats"}/>
                 </TaskWrapper>
             </LeftColumn>
              <RightColumn>
@@ -118,21 +147,24 @@ const TaskDetails: React.FC = () => {
 
                 <Tasks>
                 {
-                       currentTask === 1 && pending?.map((raid: any) => (
+                       currentTask === 1 && pending?.map((chat: any) => (
                             <Task>
                                 <div>
-                                    <h3>Twitter Raider</h3>
+                                    <h3>{chat.task.data.chatInformation.compaignCaption}</h3>
                                     <p className="task-text">
-                                        <span>Task status: </span>pending
+                                        <span>End Time: </span>{(new Date(chat?.chat?.endTime)).toUTCString()}
+                                    </p>
+                                    <p className="task-text">
+                                        <span>Task status: </span>{chat.chat.taskStatus}
                                     </p>
                                     <div className="reward">
                                         <p>
-                                            <span>Task timeline: </span>20min
+                                            <span>Task timeline: {chat.chat.timeLine / (1000 * 60 * 60)} hour </span>
                                         </p>
                                     </div>
                                 </div>
                                 <div className="claim">
-                                    <button onClick={() => router.push(`/dashboard/tasks/twitter-raiders/raid/${raid?.id}`)}>View</button>
+                                    <button onClick={() => router.push(`/dashboard/tasks/chat-engagers/chat/${chat.chat?.id}`)}>View</button>
                                 </div>
                             </Task>
                         ))
@@ -141,19 +173,22 @@ const TaskDetails: React.FC = () => {
                        currentTask === 2 && available?.map((task: any) => (
                         <Task>
                             <div>
-                                <h3>{task?.raidInformation?.action}</h3>
+                                <h3>{task.task?.data.chatInformation?.compaignCaption}</h3>
                                 <p className="task-text">
-                                {task?.raidInformation?.campaignCaption}
+                                {/* {task.task?.data?.chatInformation.compaignCaption} */}
                                 </p>
                                 <div>
                                     <p>
-                                        <span>Raiders needed: </span>{task?.raidInformation?.amount}
+                                        <span>start time: </span>{(new Date(task?.chat?.startTime)).toUTCString()}
+                                    </p>
+                                    <p>
+                                        <span>end time: </span>{(new Date(task?.chat?.endTime)).toUTCString()}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="claim">
-                                <button onClick={() => router.push(`/dashboard/tasks/chat-engagers/${task?.id}`)} style={{ marginBottom: "5px" }}>Claim</button>
+                                <button onClick={() => router.push(`/dashboard/tasks/chat-engagers/${task.chat?._id}`)} style={{ marginBottom: "5px" }}>Claim</button>
                                 <p>Reward: <span style={{ fontWeight: "600" }}>$10</span></p>
                             </div>
                         </Task>
@@ -163,13 +198,13 @@ const TaskDetails: React.FC = () => {
                        currentTask === 3 && completed?.map((task: any) => (
                             <Task>
                                 <div>
-                                    <h3>{task?.raidInformation?.action}</h3>
+                                    <h3>{task?.task?.data.chatInformation.compaignCaption}</h3>
                                     <p className="task-text">
                                        {task?.raidInformation?.campaignCaption}
                                     </p>
                                     <div className="reward">
                                         <p>
-                                            <span>Completed raids: </span>{task?.completedRaids}
+                                            <span>Completed raids: </span>{task?.task?.data.completedTasks}
                                         </p>
                                     </div>
                                 </div>

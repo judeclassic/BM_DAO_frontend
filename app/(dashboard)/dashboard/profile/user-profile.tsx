@@ -10,7 +10,7 @@ import { getUserProfile, updateProfile } from '@/app/api/auth'
 import { toast } from 'react-toastify'
 import { getUser, setLoading, setUser, useDispatch, useSelector } from '@/lib/redux'
 import { Task, TaskNavItem, Tasks } from '@/app/styles/task-details.styles'
-import { getAllModeratorServices, getAllRaiderServices, resubscribeToServiceModerator, resubscribeToServiceRaider, subscribeToServiceModerator, subscribeToServiceRaider, updateServiceHandleReq } from '@/app/api/service'
+import { getAllModeratorServices, getAllRaiderServices, getChatterServices, resubscribeToServiceModerator, resubscribeToServiceRaider, subscribeToServiceModerator, subscribeToServiceRaider, subscriptionToService, updateChatterServiceHandleReq, updateServiceHandleReq } from '@/app/api/service'
 import { getAvailableHandle } from '@/lib/utils'
 
 const Profile = () => {
@@ -23,6 +23,7 @@ const Profile = () => {
   const [currentTask, setCurrentTask] = useState(1);
   const [services, setServices] = useState([]);
   const [modServices, setModServices] = useState([]);
+  const [chatterervices, setChatterServices] = useState([]);
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [twitter, setTwitter] = useState("");
@@ -106,6 +107,20 @@ const Profile = () => {
       dispatch(setLoading(false));
     })
   }
+
+  const fetchChatterServices = () => {
+    getChatterServices()
+    .then((res) => {
+      setChatterServices(res.data.data.userServices);
+      dispatch(setLoading(false));
+    }).catch((e: any) => {
+      toast.error(e?.response?.data.error[0].message, {
+        position: toast.POSITION.TOP_RIGHT
+      });
+      dispatch(setLoading(false));
+    })
+  }
+
   const subscribeToService = () => {
         dispatch(setLoading(true));
         if(currentTask === 1) {
@@ -163,6 +178,45 @@ const Profile = () => {
             dispatch(setLoading(false));
           })
         }
+
+        if(currentTask === 3) {
+          subscriptionToService({
+            accountType: "chatter",
+              handles: {
+                twitter,
+                reddit,
+                tiktok,
+                instagram,
+                telegram,
+                thread,
+                discord,
+                youtube,
+            }
+          })
+          .then(() => {
+            fetchRaiderServices();
+            dispatch(setLoading(false));
+            setShowModal(false);
+            setTwitter("");
+            setReddit("");
+            setTiktok("");
+            setTelegram("");
+            setInstagram("");
+            setThread("");
+            setDiscord("");
+            setYoutube("");
+            toast.success("Subscribed to new chatter service successfully", {
+              position: toast.POSITION.TOP_RIGHT
+            });
+          })
+          .catch((e) => {
+            toast.error(e?.response?.data.error[0].message, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+            dispatch(setLoading(false));
+          })
+        }
+        
   }
   const updateServiceHandle = () => {
     dispatch(setLoading(true));
@@ -212,6 +266,45 @@ const Profile = () => {
           fetchModeratorServices();
           dispatch(setLoading(false));
           toast.success("Subscribed to new moderator service successfully", {
+            position: toast.POSITION.TOP_RIGHT
+          });
+      })
+      .catch((e) => {
+        toast.error(e?.response?.data.error[0].message, {
+          position: toast.POSITION.TOP_RIGHT
+        });
+        dispatch(setLoading(false));
+      })
+    }
+
+    if(currentTask === 3) {
+      updateChatterServiceHandleReq({
+          serviceId: serviceEditId,
+          handles: {
+            twitter: twitterEdit,
+            reddit: redditEdit,
+            tiktok: tiktokEdit,
+            instagram: instagramEdit,
+            telegram: telegramEdit,
+            thread: threadEdit,
+            discord: discordEdit,
+            youtube: youtubeEdit,
+        }
+      })
+      .then(() => {
+          fetchRaiderServices();
+          dispatch(setLoading(false));
+          setShowEditModal(false);
+          setServiceEditId("");
+          setTwitterEdit("");
+          setRedditEdit("");
+          setTiktokEdit("");
+          setTelegramEdit("");
+          setInstagramEdit("");
+          setThreadEdit("");
+          setDiscordEdit("");
+          setYoutubeEdit("");
+          toast.success("Service handle updated successfully", {
             position: toast.POSITION.TOP_RIGHT
           });
       })
@@ -278,6 +371,7 @@ const Profile = () => {
     fetchProfile();
     fetchRaiderServices();
     fetchModeratorServices();
+    fetchChatterServices();
   }, [])
   
   return (
@@ -383,10 +477,43 @@ const Profile = () => {
                             </Task>
                         ))
                     }
+
+{
+                       currentTask === 3 && chatterervices.filter((s: any) => s.accountType === "chatter").map((raid: any, i: number) => (
+                            <Task style={{ alignItems: "center"}} key={i}>
+                                <div>
+                                    <h3 style={{ marginBottom: "0px"}}>@{getAvailableHandle(raid.handles)}</h3>
+                                    <p className="task-text">
+                                        <span>Subscribed on: </span>{(new Date(raid?.createdAt)).toDateString()}
+                                    </p>
+                                    <div className="reward">
+                                      <p>
+                                          <span style={{ marginRight: "10px" }}>Subscription status: </span>{raid?.subscriptionStatus}
+                                      </p>
+                                    </div>
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column", rowGap: "10px" }}>
+                                  <div className="claim">
+                                    <button onClick={(e) => handleShowEdit(e, raid)}>Edit</button>
+                                  </div>
+                                  {
+                                    (raid?.subscriptionStatus !== "ACTIVE") &&  (
+                                      <div className="claim">
+                                          <button onClick={(e) => {
+                                             e.preventDefault()
+                                             resubscribeToService(raid?.id)
+                                            }}>Resubscribe</button>
+                                      </div>
+                                    )
+                                  }
+                                </div>
+                            </Task>
+                        ))
+                    }
                 </Tasks>
                 {currentTask === 1 && (<ServiceBtn onClick={() => setShowModal(true)}>New Raider Service</ServiceBtn>)}
                 {currentTask === 2 && !modServices.length && (<ServiceBtn onClick={() => setShowModal(true)}>New Moderator Service</ServiceBtn>)}
-                {currentTask === 3 && (<ServiceBtn>New Chatter Service</ServiceBtn>)}
+                {currentTask === 3 && (<ServiceBtn onClick={() => setShowModal(true)}>New Chatter Service</ServiceBtn>)}
         </Form>
         <UserSection>
           <UserWrap>
@@ -413,7 +540,7 @@ const Profile = () => {
         showModal &&
         (<Modal>
           <ModalCard>
-            <p>You are about to subscribe for a {(currentTask === 1) && "raid"}{(currentTask === 2) && "moderator"} package for $10</p>
+            <p>You are about to subscribe for a {(currentTask === 1) && "raid"}{(currentTask === 2) && "moderator"}{(currentTask === 3) && "chatter"} package for $10</p>
             <div style={{ display: "flex", flexDirection: "column", margin: "20px 0", textAlign: "left" }}>
               <InputWrapper>
                 <label>Twitter</label>
