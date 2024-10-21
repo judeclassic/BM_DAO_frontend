@@ -2,6 +2,7 @@
 import { getUserProfileRefferal } from '@/app/api/auth'
 import HeadingCard from '@/app/components/heading-card'
 import { CopyIcon } from '@/app/components/svg-icons'
+import { IUser } from '@/app/interface/user.interface'
 import { Container, CopyContainer, StatsContainer } from '@/app/styles/dashboard.style'
 import { Left, MRow, MTable, Right, TBody, THead, TRow, Table, Top, UserImage, Wrapper } from '@/app/styles/referral.style'
 import { getUser, useSelector } from '@/lib/redux'
@@ -13,7 +14,7 @@ const Dashboard = () => {
     const user = useSelector(getUser);
     const [level, setLevel] = useState("1");
     const [referal, setReferal] = useState<any>(null);
-    const [referrals, setReferrals] = useState([])
+    const [referrals, setReferrals] = useState<IUser[]>([])
     const handleLinkCopy = (content: string) => {
         navigator.clipboard.writeText(content);
         toast.success("Referral Link copied to clipboard", {
@@ -55,20 +56,19 @@ const Dashboard = () => {
                     <p>Earnings</p>
                 </THead>
                 <TBody>
-                    {
-                        referrals.map((val: any, i: number) => (
-                            <TRow key={i}>
-                                <p>
-                                    <UserImage>
-                                        <Image src={"/user-1.png"} alt="user"  objectFit="cover" objectPosition="center" layout="fill" />
-                                    </UserImage>
-                                    <span>{val.name}</span>
-                                </p>
-                                <p>Level {level}</p>
-                                <p>${val.referal.analytics.totalEarned}</p>
-                            </TRow>
-                        ))
-                    }
+                    {referrals.map((referral, i) => (
+                        <TRow key={i}>
+                            <p>
+                                <UserImage>
+                                    <Image src={"/user-1.png"} alt="user"  objectFit="cover" objectPosition="center" layout="fill" />
+                                </UserImage>
+                                <span>{referral.name}</span>
+                            </p>
+                            <p>Level {level}</p>
+                            <p>${referral.referral.analytics.totalEarned}</p>
+                        </TRow>
+                    ))}
+  
                 </TBody>
             </Table>
             <MTable>
