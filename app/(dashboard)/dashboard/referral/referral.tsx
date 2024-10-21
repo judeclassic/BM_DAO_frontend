@@ -89,8 +89,8 @@ const Dashboard = () => {
           <CopyContainer>
             <p className='label'>Share your referral link</p>
             <div>
-              <p>{window?.location?.host}/register?code={user.referal?.myReferalCode ?? ""}</p>
-              <button onClick={() => handleLinkCopy(`${window?.location?.host}/register?code=${user.referal?.myReferalCode}` ?? "")}>
+              <p>{window?.location?.host}/register?code={user.referral?.myReferralCode ?? ""}</p>
+              <button onClick={() => handleLinkCopy(`${window?.location?.host}/register?code=${user.referral?.myReferralCode}` ?? "")}>
                   <CopyIcon />
                   <span>Copy</span>
               </button>

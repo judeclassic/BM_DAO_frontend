@@ -5,14 +5,14 @@ export interface IUser {
     accessToken?: string;
     wallet?: {
         balance?: {
-            referalBonus?: number;
+            referralBonus?: number;
             taskBalance?: number;
             walletBalance?: number;
             totalBalance?: number;
         }
     },
-    referal?: {
-        myReferalCode?: string;
+    referral?: {
+        myReferralCode?: string;
     },
     isVerified?: boolean;
     country?: string;
