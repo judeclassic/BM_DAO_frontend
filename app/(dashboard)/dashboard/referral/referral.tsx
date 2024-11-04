@@ -1,5 +1,5 @@
 "use client"
-import { getUserProfileRefferal } from '@/app/api/auth'
+import { getUserProfileRefferal as getUserProfileReferral } from '@/app/api/auth'
 import HeadingCard from '@/app/components/heading-card'
 import { CopyIcon } from '@/app/components/svg-icons'
 import { IUser } from '@/app/interface/user.interface'
@@ -13,7 +13,7 @@ import { toast } from 'react-toastify'
 const Dashboard = () => {
     const user = useSelector(getUser);
     const [level, setLevel] = useState("1");
-    const [referal, setReferal] = useState<any>(null);
+    const [referral, setReferral] = useState<any>(null);
     const [referrals, setReferrals] = useState<IUser[]>([])
     const handleLinkCopy = (content: string) => {
         navigator.clipboard.writeText(content);
@@ -22,12 +22,12 @@ const Dashboard = () => {
         });
     }
     const fetchReferral = () => {
-        getUserProfileRefferal(level)
+        getUserProfileReferral(level)
         .then((res) => {
           console.log(res.data.data);
           const data = res.data.data;
-          setReferrals(data.referals);
-          setReferal(data.referal)
+          setReferrals(data.referrals);
+          setReferral(data.referral)
         })
         .catch((e) => {
           console.log(e)
@@ -79,7 +79,7 @@ const Dashboard = () => {
                                 <p>{val.name}</p>
                                 <p>Level {level}</p>
                             </div>
-                            <p>${val.referal.analytics.totalEarned}</p>
+                            <p>${val?.referral?.analytics?.totalEarned}</p>
                         </MRow>
                     ))
                 }
@@ -104,11 +104,11 @@ const Dashboard = () => {
             </div>
             <div>
               <p>Total Referrals</p>
-              <p>{referal?.analytics.totalAmount}</p>
+              <p>{referral?.analytics.totalAmount}</p>
             </div>
             <div>
               <p>Total Earnings</p>
-              <p>${referal?.analytics.totalEarned} ({Number(referal?.analytics.totalEarned ?? "0") * 1000 } BMT)</p>
+              <p>${referral?.analytics.totalEarned} ({Number(referral?.analytics.totalEarned ?? "0") * 1000 } BMT)</p>
             </div>
           </StatsContainer>
           <h2>How Referral works</h2>
