@@ -58,7 +58,7 @@ const Register = () => {
         name: fullname,
         emailAddress: email,
         username,
-        referalCode: referralCode,
+        referralCode: referralCode,
         country,
         accountType: accountType,
         password,

@@ -113,7 +113,7 @@ export interface IUserRegister {
     username: string;
     password: string;
     country: string;
-    referalCode: string;
+    referralCode: string;
     phoneNumber: string;
 }
 export interface IUserLogin {

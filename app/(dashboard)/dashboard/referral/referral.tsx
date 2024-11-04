@@ -1,5 +1,5 @@
 "use client"
-import { getUserProfileRefferal as getUserProfileReferral } from '@/app/api/auth'
+import { getUserProfileReferral as getUserProfileReferral } from '@/app/api/auth'
 import HeadingCard from '@/app/components/heading-card'
 import { CopyIcon } from '@/app/components/svg-icons'
 import { IUser } from '@/app/interface/user.interface'

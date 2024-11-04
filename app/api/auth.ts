@@ -13,6 +13,7 @@ export const getUserProfile = () => {
 export const updateProfile = (body: any) => {
     return axiosInstance().post("/user/personal/profile/update", body);
 }
-export const getUserProfileRefferal = (level: string) => {
-    return axiosInstance().get(`/user/personal/profile/referal/${level}`);
+export const getUserProfileReferral = (level: string) => {
+    console.log("level: ", level);
+    return axiosInstance().get(`/user/personal/profile/referral/${level}`);
 }
