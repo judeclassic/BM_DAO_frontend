@@ -15,6 +15,16 @@ export const Wrapper = styled.div`
     }
 `;
 
+export const TaskImageWrapper = styled.div`
+    background-color: #f2f2f2;
+    height: 100%;
+    width: 500px;
+    border-radius:10px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.25rem;
+`
+
 export const LeftColumn = styled.div`
     display: flex;
     flex-direction: column;

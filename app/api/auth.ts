@@ -1,4 +1,4 @@
-import { IUserLogin, IUserRegister } from "../interface/user.interface";
+import { IForgotPassword, IResetPassword, IUserLogin, IUserRegister, IVerifyEmail } from "../interface/user.interface";
 import { axiosInstance } from "./axios"
 
 export const registerUser = (body: IUserRegister) => {
@@ -16,4 +16,16 @@ export const updateProfile = (body: any) => {
 export const getUserProfileReferral = (level: string) => {
     console.log("level: ", level);
     return axiosInstance().get(`/user/personal/profile/referral/${level}`);
+}
+
+export const verifyUserEmail = (body: IVerifyEmail) => {
+    return axiosInstance().post("/user/auth/email/verification", body);
+}
+
+export const forgotPassword = (body: IForgotPassword) => {
+    return axiosInstance().post("/user/auth/forgot/password", body);
+}
+
+export const resetPassword = (body: IResetPassword) => {
+    return axiosInstance().post("/user/auth/reset/password", body);
 }

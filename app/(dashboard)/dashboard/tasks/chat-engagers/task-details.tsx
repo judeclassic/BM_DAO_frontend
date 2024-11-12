@@ -89,7 +89,6 @@ const TaskDetails: React.FC = () => {
     const totalPending = () => {
         getTotalStatusTask('STARTED')
         .then((res) => {
-            console.log("res", res.data.data)
             setTotalPendingTask(res.data.data);
         })
         .catch((res) => {
@@ -99,7 +98,6 @@ const TaskDetails: React.FC = () => {
     const totalCompleted = () => {
         getTotalStatusTask('COMPLETED')
         .then((res) => {
-            console.log("res", res.data.data)
             setTotalCompletedTask(res.data.data);
         })
         .catch((res) => {
@@ -189,7 +187,7 @@ const TaskDetails: React.FC = () => {
 
                             <div className="claim">
                                 <button onClick={() => router.push(`/dashboard/tasks/chat-engagers/${task.chat?._id}`)} style={{ marginBottom: "5px" }}>Claim</button>
-                                <p>Reward: <span style={{ fontWeight: "600" }}>$10</span></p>
+                                <p>Reward: <span style={{ fontWeight: "600" }}>$0.4</span></p>
                             </div>
                         </Task>
                         ))

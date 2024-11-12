@@ -16,6 +16,9 @@ import {
 import { getUser, useSelector } from "@/lib/redux";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import ChatTaskDetailsNew from "./chat-task-details";
+import RaidTaskDetailsNew from "./raid-task-details";
+import { CompletedTaskDetails } from "./completed-task-details";
 
 const TaskDetailsNew = () => {
     const [tasks, setTasks] = useState<any>([]);
@@ -60,83 +63,31 @@ const TaskDetailsNew = () => {
         <Wrapper>
             <LeftColumn>
                 <TaskWrapper>
-                    <TaskBox heading={"Available Tasks"} tasksNub={user?.moderatorService?.analytics.availableTask ?? 0} />
+                    {/* <TaskBox heading={"Available Tasks"} tasksNub={user?.moderatorService?.analytics.availableTask ?? 0} />
                     <TaskBox heading={"Pending Tasks"} tasksNub={user?.moderatorService?.analytics.pendingTask ?? 0} />
-                    <TaskBox heading={"Completed Tasks"} tasksNub={user?.moderatorService?.analytics.completedTask ?? 0} />
+                    <TaskBox heading={"Completed Tasks"} tasksNub={user?.moderatorService?.analytics.completedTask ?? 0} /> */}
                 </TaskWrapper>
             </LeftColumn>
 
             <RightColumn>
                 <TaskNav>
-                    <TaskNavItem isActive={currentTask === 1} onClick={() => setCurrentTask(1)}>Moderating</TaskNavItem>
-                    <TaskNavItem isActive={currentTask === 2} onClick={() => setCurrentTask(2)}>Available</TaskNavItem>
-                    <TaskNavItem isActive={currentTask === 3} onClick={() => setCurrentTask(3)}>Completed</TaskNavItem>
+                    <TaskNavItem isActive={currentTask === 1} onClick={() => setCurrentTask(1)}>Chatters</TaskNavItem>
+                    <TaskNavItem isActive={currentTask === 2} onClick={() => setCurrentTask(2)}>Raid</TaskNavItem>
+                    {/* <TaskNavItem isActive={currentTask === 3} onClick={() => setCurrentTask(3)}>Completed</TaskNavItem> */}
                 </TaskNav>
-
-                <Tasks>
                 {
-                       currentTask === 1 && raids?.map((raid: any) => (
-                            <Task>
-                                <div>
-                                    <h3>Moderator</h3>
-                                    <p className="task-text">
-                                        <span>Task action: </span>{raid?.raidInformation.action}
-                                    </p>
-                                    <div className="reward">
-                                        <p>
-                                            <span>Completed raids: </span>{raid?.completedRaids}/{raid.totalRaids}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="claim">
-                                    <button onClick={() => router.push(`/dashboard/tasks/moderators/task/${raid?.id}`)}>View</button>
-                                </div>
-                            </Task>
-                        ))
-                    }
-                    {
-                       currentTask === 2 && tasks?.map((task: any) => (
-                            <Task>
-                                <div>
-                                    <h3>{task?.raidInformation?.action}</h3>
-                                    <p className="task-text">
-                                       {task?.raidInformation?.campaignCaption}
-                                    </p>
-                                    <div className="reward">
-                                        <p>
-                                            <span>Raiders needed: </span>{task?.raidInformation?.amount}
-                                        </p>
-                                    </div>
-                                </div>
-        
-                                <div className="claim">
-                                    <button onClick={() => router.push(`/dashboard/tasks/moderators/${task?.id}`)}>Moderate</button>
-                                    <p style={{ paddingTop: "10px" }}>{task?.completedRaids} raids completed</p>
-                                </div>
-                            </Task>
-                        ))
-                    }
-                    {
-                       currentTask === 3 && completedRaids?.map((task: any) => (
-                            <Task>
-                                <div>
-                                    <h3>{task?.raidInformation?.action}</h3>
-                                    <p className="task-text">
-                                       {task?.raidInformation?.campaignCaption}
-                                    </p>
-                                    <div className="reward">
-                                        <p>
-                                            <span>Completed raids: </span>{task?.completedRaids}
-                                        </p>
-                                    </div>
-                                </div>
-                            </Task>
-                        ))
-                    }
-                </Tasks>
+                    currentTask === 1  && <ChatTaskDetailsNew/> 
+                }
+                {
+                    currentTask === 2  && <RaidTaskDetailsNew/> 
+                }
+                {
+                    currentTask === 3  && <CompletedTaskDetails/> 
+                }
             </RightColumn>
         </Wrapper>
     );
 };
 
 export default TaskDetailsNew;
+

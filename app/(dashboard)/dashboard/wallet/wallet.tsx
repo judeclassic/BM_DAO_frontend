@@ -33,6 +33,10 @@ import { getUserTransactionHistory } from "@/app/api/wallet";
 import { getUserProfile } from "@/app/api/auth";
 import { Pagination } from "@/app/styles/client-moderators.style";
 import { generatePages } from "@/lib/utils";
+import DepositeTask from "./deposit";
+import WithdrawTask from "./withraw";
+import TransferTask from "./transfer";
+import { bmdaoTokenBalance, nativeTokenBalance } from "@/app/api/service";
 
 const Wallet = () => {
     const [changeCurrency, setChangeCurrency] = useState<boolean>(false);
@@ -46,6 +50,10 @@ const Wallet = () => {
     const [refetch, setRefetch] = useState(false);
     const [showWithdraw, setShowWithdraw] = useState(false);
     const [showDeposit, setShowDeposit] = useState(false);
+    const [showTransfer, setShowTransfer] = useState(false);
+    const [userProfile, setUserProfile] = useState<any>('')
+    const [tokenBalance, setTokenBalance] = useState<any>('')
+    const [nativeToken, setNativeToken] = useState<any>('')
     const handleChangePage = (page: number) => {
         if((page !== currentPage) && (page > 0) && (page <= numberOfPages)) {
             setCurrentPage(page);
@@ -62,9 +70,44 @@ const Wallet = () => {
         .catch((e) => {
           console.log(e)
         })
-      }
+    }
+
+    const userProfilee = () => {
+        getUserProfile()
+        .then((res) => {
+            setUserProfile(res.data.data)
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+    }
+
+    const fetchbmdaoTokenbalance = () => {
+        bmdaoTokenBalance()
+        .then((res) => {
+            setTokenBalance(res.data.data.balance)
+        })
+        .catch((e) => {
+          console.log('Error', e)
+        })
+    }
+
+    const fetchNativeTokenbalance = () => {
+        nativeTokenBalance()
+        .then((res: any) => {
+            console.log('rss', res.data.data.balance)
+            setNativeToken(res.data.data.balance)
+        })
+        .catch((e: any) => {
+            console.log('Error', e)
+        })
+    }
+    
     useEffect(() => {
       fetchHistory();
+      userProfilee()
+      fetchbmdaoTokenbalance()
+      fetchNativeTokenbalance()
     }, [])
     
     return (
@@ -75,7 +118,7 @@ const Wallet = () => {
                     <div className="top">
                         <div>
                             <p>Wallet Balance</p>
-                            <h1>${Number(user?.wallet?.balance?.totalBalance ?? "0").toFixed(2)}</h1>
+                            <h1>${Number(user?.wallet?.balance?.totalBalance ?? "0").toFixed(4)}</h1>
                         </div>
                         <button>
                             <span>BMT</span>
@@ -90,7 +133,7 @@ const Wallet = () => {
                         <p>USD</p>
                         <div>
                             <p>Available Balance</p>
-                            <Amount>${Number(user?.wallet?.balance?.totalBalance ?? "0").toFixed(2)}</Amount>
+                            <Amount>${Number(user?.wallet?.balance?.totalBalance ?? "0").toFixed(4)}</Amount>
                         </div>
                     </BalanceCard>
 
@@ -105,10 +148,10 @@ const Wallet = () => {
                         <div>
                             <div className="content">
                                 <Image src={chart} alt="chart icon" />
-                                Total Income
+                                Cryto BMT Balance
                             </div>
 
-                            <div className="price">$0</div>
+                            <div className="price">{tokenBalance} BMT</div>
                         </div>
 
                         <div className="stroke"></div>
@@ -116,31 +159,35 @@ const Wallet = () => {
                         <div>
                             <div className="content">
                                 <Image src={chart} alt="chart icon" />
-                                Total Withdrawn
+                                Matic Balance
                             </div>
-
-                            <div className="price">$0</div>
+                            <div className="price">{(parseFloat(nativeToken)).toFixed(4)} Matic</div>
                         </div>
                     </TotalCard>
                 </BalanceCards>
 
                 <Buttons>
-                    <button>
+                    <button   onClick={() => setShowWithdraw(true)}>
                         <WithdrawIcon /> Withdraw
+                        
                     </button>
-                    <button>
+                    <button  onClick={() => setShowDeposit(true)}>
                         <DepositIcon /> Deposit
                     </button>
+                    <button  onClick={() => setShowTransfer(true)}>
+                        <DepositIcon /> Transfer
+                    </button>
                 </Buttons>
+                <p>{userProfile?.wallet?.wallet?.address}</p>
 
                 <WalletMobileTotalCard>
                     <div>
                         <div className="content">
                             <Image src={chart} alt="chart icon" />
-                            Total Income
+                            Cryto BMT Balance
                         </div>
 
-                        <div className="price">$0</div>
+                        <div className="price">{tokenBalance} BMT</div>
                     </div>
 
                     <div className="stroke"></div>
@@ -148,10 +195,10 @@ const Wallet = () => {
                     <div>
                         <div className="content">
                             <Image src={chart} alt="chart icon" />
-                            Total Withdrawn
+                            Matic Balance
                         </div>
 
-                        <div className="price">$0</div>
+                        <div className="price">{Number(nativeToken ?? "0").toFixed(4)} Matic</div>
                     </div>
                 </WalletMobileTotalCard>
             </BalanceContainer>
@@ -231,14 +278,15 @@ const Wallet = () => {
                 </Pagination>
             </History>
             {
-                showWithdraw && (
-                    <></>
-                )
+                showWithdraw && <WithdrawTask setShowModal={setShowWithdraw} setRefetch={setRefetch} refetch={refetch}/>
             }
             {
-                showDeposit && (
-                    <></>
-                )
+                showDeposit && <DepositeTask setShowModal={setShowDeposit} setRefetch={setRefetch} refetch={refetch}/>
+                    
+            }
+            {
+                showTransfer && <TransferTask setShowModal={setShowTransfer} setRefetch={setRefetch} refetch={refetch}/>
+                    
             }
         </Container>
     );

@@ -1,10 +1,11 @@
 import axios from "axios"
+// export const baseURL = `http://localhost:8081/api`
+export const baseURL = `https://api.bmdao.xyz/api`
 
 export const axiosInstance = () => {
     const token = typeof window !== "undefined" && localStorage.getItem("bmdao-token");
     return axios.create({
-        // baseURL: 'http://localhost:8081/api',
-        baseURL: 'https://api.bmdao.xyz/api',
+        baseURL: baseURL,
         headers: {
             Authorization: !!token ? `Bearer ${token}` : "",
         }

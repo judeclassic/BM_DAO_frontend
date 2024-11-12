@@ -31,7 +31,7 @@ import { getSingleTask, startRaidTask } from "@/app/api/task";
 import { getUser, setLoading, useDispatch, useSelector } from "@/lib/redux";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { getAllRaiderServices } from "@/app/api/service";
+import { getAllRaiderServices, raiderAvailbleTaskForDay, raiderTaskByStatus } from "@/app/api/service";
 import { formatLink, getAvailableHandle } from "@/lib/utils";
 import Link from "next/link";
 
@@ -50,6 +50,10 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
     const user = useSelector(getUser);
     const dispatch = useDispatch();
     const router = useRouter();
+
+    const [totalAvailbleTask, setTotalAvailbleTask] = useState<any>(0);
+    const [totalPendingTask, setTotalPendingTask] = useState<any>(0);
+    const [totalCompletedTask, setTotalCompletedTask] = useState<any>(0);
 
     const addUrl = () => {
         if (url === "") {
@@ -120,10 +124,42 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
           });
           dispatch(setLoading(false));
         })
-      }
+    }
+
+    const fetchAvailableTasks = () => {
+        raiderAvailbleTaskForDay(1, 100)
+        .then((res) => {
+            setTotalAvailbleTask(res.data.data.totalTasks)
+        })
+        .catch((res) => {
+
+        })
+    }
+    const fetchPendingRaids = () => {
+        raiderTaskByStatus(1, 1000, "STARTED")
+        .then((res) => {
+            setTotalPendingTask(res.data.data.totalRaids)
+        })
+        .catch((res) => {
+
+        })
+    }
+    const fetchCompletedRaids = () => {
+        raiderTaskByStatus(1, 1000, "COMPLETED")
+        .then((res) => {
+            setTotalCompletedTask(res.data.data.totalRaids)      
+        })
+        .catch((res) => {
+
+        })
+    }
+
     useEffect(() => {
       fetchTask();
       fetchRaiderServices();
+      fetchAvailableTasks()
+      fetchPendingRaids()
+      fetchCompletedRaids()
     }, [])
     
 
@@ -131,9 +167,9 @@ const TaskDetails: React.FC<IProps> = ({ id }) => {
         <Wrapper>
             <LeftColumn>
                 <TaskWrapper style={{ marginTop: "60px" }}>
-                    <TaskBox heading={"Available Tasks"} tasksNub={user.raiderService?.analytics.availableTask ?? 0} />
-                    <TaskBox heading={"Pending Tasks"} tasksNub={user.raiderService?.analytics.pendingTask ?? 0} />
-                    <TaskBox heading={"Completed Tasks"} tasksNub={user.raiderService?.analytics.completedTask ?? 0} />
+                    <TaskBox heading={"Available Tasks"} tasksNub={totalAvailbleTask ?? 0} />
+                    <TaskBox heading={"Pending Tasks"} tasksNub={totalPendingTask ?? 0} />
+                    <TaskBox heading={"Completed Tasks"} tasksNub={totalCompletedTask ?? 0} />
                 </TaskWrapper>
             </LeftColumn>
 

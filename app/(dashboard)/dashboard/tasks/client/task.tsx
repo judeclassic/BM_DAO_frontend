@@ -22,9 +22,10 @@ import {
 import { Container, StatsCard } from "@/app/styles/dashboard.style";
 import React, { useEffect, useState } from "react";
 import UploadTask from "./upload-task";
-import { getAllClientTask } from "@/app/api/task";
+import { getAllClientRaiderTask } from "@/app/api/task";
 import { generatePages } from "@/lib/utils";
 import { getUser, useSelector } from "@/lib/redux";
+import { getAllClientChatterTask, getAllTotalChatTaskByStatus, getAllTotalRaidTaskByStatus } from "@/app/api/service";
 
 const ClientTasks = () => {
     const [showModal, setShowModal] = useState<boolean>(false);
@@ -35,12 +36,42 @@ const ClientTasks = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const user = useSelector(getUser);
     const [refetch, setRefetch] = useState(false);
+    const [totalUploadRaid, setTotalUploadRaid] = useState(0);
+    const [totalUploadChat, setTotalUploadChat] = useState(0);
+    const [totalCompletedRaid, setTotalCompletedRaid] = useState(0);
+    const [totalCompletedChat, setTotalCompletedChat] = useState(0);
     const fetchTasks = () => {
-        getAllClientTask(limit, currentPage)
+        getAllClientRaiderTask(limit, currentPage)
         .then((res) => {
             setTasks(res.data.data.tasks);
             setPages(generatePages(res.data.data.totalTasks, limit, currentPage))
             setNumberOfPages(Math.ceil(res.data.data.totalTasks/limit));
+
+            setTotalUploadRaid(res.data.data.totalTasks)
+        })
+        .catch((res) => {
+
+        })
+
+        getAllClientChatterTask(0, 50)
+        .then((res) => {
+            setTotalUploadChat(res.data.data.totalTasks)
+        })
+        .catch((res) => {
+
+        })
+
+        getAllTotalChatTaskByStatus('APPROVED')
+        .then((res) => {
+            setTotalCompletedChat(res.data.data)
+        })
+        .catch((res) => {
+
+        })
+
+        getAllTotalRaidTaskByStatus(1, 2, 'APPROVED')
+        .then((res) => {
+            setTotalCompletedRaid(res.data.data.totalRaids)
         })
         .catch((res) => {
 
@@ -61,7 +92,7 @@ const ClientTasks = () => {
 
                 <ModWrapper>
                     <Tasks>
-                        <TaskCard>
+                        {/* <TaskCard>
                             <div className="top">
                                 <h2>Moderator</h2>
                             </div>
@@ -82,9 +113,9 @@ const ClientTasks = () => {
                                     <h2>{user.analytics?.moderators.totalCompleted}</h2>
                                 </StatsCard>
                             </div>
-                        </TaskCard>
+                        </TaskCard> */}
 
-                        <TaskCard>
+                        {/* <TaskCard>
                             <div className="top">
                                 <h2>Collab Manager</h2>
                             </div>
@@ -105,7 +136,7 @@ const ClientTasks = () => {
                                     <h2>{user.analytics?.collabManagers.totalCompleted}</h2>
                                 </StatsCard>
                             </div>
-                        </TaskCard>
+                        </TaskCard> */}
 
                         <TaskCard>
                             <div className="top">
@@ -117,7 +148,8 @@ const ClientTasks = () => {
                                         <DocumentIcon />
                                         <p>Uploaded</p>
                                     </div>
-                                    <h2>{user.analytics?.raiders.totalUploaded}</h2>
+                                    {/* <h2>{user.analytics?.raiders.totalUploaded}</h2> */}
+                                    <h2>{totalUploadRaid}</h2>
                                 </StatsCard>
                                 <div className="divider"></div>
                                 <StatsCard>
@@ -125,7 +157,8 @@ const ClientTasks = () => {
                                         <DocumentIcon />
                                         <p>Completed</p>
                                     </div>
-                                    <h2>{user.analytics?.raiders.totalCompleted}</h2>
+                                    {/* <h2>{user.analytics?.raiders.totalCompleted}</h2> */}
+                                    <h2>{totalCompletedRaid}</h2>
                                 </StatsCard>
                             </div>
                         </TaskCard>
@@ -140,7 +173,8 @@ const ClientTasks = () => {
                                         <DocumentIcon />
                                         <p>Uploaded</p>
                                     </div>
-                                    <h2>{user.analytics?.chatEngagers.totalUploaded}</h2>
+                                    {/* <h2>{user.analytics?.chatEngagers.totalUploaded}</h2> */}
+                                    <h2>{totalUploadChat}</h2>
                                 </StatsCard>
                                 <div className="divider"></div>
                                 <StatsCard>
@@ -148,7 +182,8 @@ const ClientTasks = () => {
                                         <DocumentIcon />
                                         <p>Completed</p>
                                     </div>
-                                    <h2>{user.analytics?.chatEngagers.totalCompleted}</h2>
+                                    {/* <h2>{user.analytics?.chatEngagers.totalCompleted}</h2> */}
+                                    <h2>{totalCompletedChat}</h2>
                                 </StatsCard>
                             </div>
                         </TaskCard>

@@ -15,6 +15,7 @@ const Dashboard = () => {
     const [level, setLevel] = useState("1");
     const [referral, setReferral] = useState<any>(null);
     const [referrals, setReferrals] = useState<IUser[]>([])
+    const [myReferalCode, setMyReferralCode] = useState([])
     const handleLinkCopy = (content: string) => {
         navigator.clipboard.writeText(content);
         toast.success("Referral Link copied to clipboard", {
@@ -26,8 +27,11 @@ const Dashboard = () => {
         .then((res) => {
           console.log(res.data.data);
           const data = res.data.data;
+          console.log('yuo', data.referral.myReferralCode)
           setReferrals(data.referrals);
           setReferral(data.referral)
+          setMyReferralCode(data.referral.myReferralCode)
+          
         })
         .catch((e) => {
           console.log(e)
@@ -89,8 +93,9 @@ const Dashboard = () => {
           <CopyContainer>
             <p className='label'>Share your referral link</p>
             <div>
-              <p>{window?.location?.host}/register?code={user.referral?.myReferralCode ?? ""}</p>
-              <button onClick={() => handleLinkCopy(`${window?.location?.host}/register?code=${user.referral?.myReferralCode}` ?? "")}>
+              {/* <p>{window?.location?.host}/register?code={user.referal?.myReferalCode ?? ""}</p> */}
+              <p>{myReferalCode}</p>
+              <button onClick={() => handleLinkCopy(`${myReferalCode}` ?? "")}>
                   <CopyIcon />
                   <span>Copy</span>
               </button>
