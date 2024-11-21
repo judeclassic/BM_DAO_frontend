@@ -15,11 +15,7 @@ import {
 import { createRaidTask } from "@/app/api/task";
 import { setLoading, useDispatch } from "@/lib/redux";
 import { toast } from "react-toastify";
-<<<<<<< HEAD
-import { createChatTask } from "@/app/api/chat";
-=======
 import { createChatTask } from "@/app/api/service";
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
 
 interface Props {
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,13 +38,6 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
     const [caption, setCaption] = useState("");
     const [mediaLink, setMediaLink] = useState("");
 
-<<<<<<< HEAD
-    const [postLink, setPostLink] = useState("")
-    const [compaignCaption, setCompaignCaption] = useState("")
-    const [chatterPerSession, setChatterPerSession] = useState(0)
-    const [compaignDay, setCompaignDay] = useState(1)
-    const [hoursPerDay, setHoursPerDay] = useState(1)
-=======
     const [chatHourPerDay, setChatHourPerDay] = useState('1')
     const [chatDays, setChatDays] = useState('1')
     const [chatPerSession, setChatPerSession] = useState('1')
@@ -56,7 +45,6 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
     const [chatStartDate, setChatStartDate] = useState('')
     const [chatCompaignCaption, setChatCompaignCaption] = useState('')
     const [chatPostLink, setChatPostLink] = useState('')
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
 
     const toggleAction = (action: string) => {
         setActions((prev) => {
@@ -120,16 +108,9 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                 dispatch(setLoading(false));
             })
         }
-<<<<<<< HEAD
-        if(taskType === "chat-engager") {
-            console.log("chatterPerSession: ", compaignCaption);
-
-            if(!postLink || !chatterPerSession || !hoursPerDay || !startDate) {
-=======
 
         if(taskType === "chat-engager") {
             if(!chatHourPerDay || !chatDays || !chatPerSession || !chatMedia || !chatStartDate || !chatCompaignCaption || !chatPostLink) {
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
               toast.error("Fill in required fields", {
                 position: toast.POSITION.TOP_RIGHT
               });
@@ -138,16 +119,6 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
             dispatch(setLoading(true));
             createChatTask({
                 serviceType: "chatter",
-<<<<<<< HEAD
-                postLink: postLink,
-                compaignCaption: compaignCaption,
-                chatterPerSession: chatterPerSession,
-                hoursPerDay: hoursPerDay,
-                startDate: (new Date(startDate)).toISOString(),
-                days: compaignDay
-            }).then((res) => {
-                toast.success("Chatter task created successfully", {
-=======
                 postLink: chatPostLink,
                 compaignCaption: chatCompaignCaption,
                 chatterPerSession: chatPerSession,
@@ -157,7 +128,6 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                 media: chatMedia
             }).then((res) => {
                 toast.success("chatters task created successfully", {
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
                     position: toast.POSITION.TOP_RIGHT
                 });
                 setShowModal(false);
@@ -181,11 +151,8 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                 dispatch(setLoading(false));
             })
         }
-<<<<<<< HEAD
-=======
 
 
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
     }
 
     const getPrice = (type: ActionType): number => {
@@ -221,12 +188,6 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                         id="task-type"
                                         onChange={(e) => changeTaskType(e)}
                                     >
-<<<<<<< HEAD
-                                        <option value="chat-engager">
-                                            Chat Engager
-                                        </option>
-=======
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
                                         {/* <option value="collab-manager">
                                             Collab Manager
                                         </option> */}
@@ -254,13 +215,9 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                             id="hours-of-engagement"
                                             type="number"
                                             placeholder=""
-<<<<<<< HEAD
-                                            onChange={(e) => setHoursPerDay(parseInt(e.target.value))}
-=======
                                             min="1"
                                             value={chatHourPerDay}
                                             onChange={(e) => setChatHourPerDay(e.target.value)}
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
                                         />
                                     </label>
 
@@ -271,13 +228,9 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                             id="campaign-day"
                                             type="number"
                                             placeholder=""
-<<<<<<< HEAD
-                                            onChange={(e) => setCompaignDay(parseInt(e.target.value))}
-=======
                                             min="1"
                                             value={chatDays}
                                             onChange={(e) => setChatDays(e.target.value)}
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
                                         />
                                     </label>
                                 </div>
@@ -289,12 +242,8 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                             <select
                                                 name="active-chatters"
                                                 id="active-chatters"
-<<<<<<< HEAD
-                                                onChange={(e) => setChatterPerSession(parseInt(e.target.value))}
-=======
                                                 value={chatPerSession}
                                                 onChange={(e) => setChatPerSession(e.target.value as ChatPerSessionType)}
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
                                             >
                                                 <option>Chat per session</option>
                                                 <option value="1">1</option>
@@ -388,37 +337,8 @@ const UploadTask: React.FC<Props> = ({ setShowModal, setRefetch, refetch }) => {
                                             id="community-link"
                                             type="text"
                                             placeholder=""
-<<<<<<< HEAD
-                                            onChange={(e) => setPostLink(e.target.value)}
-                                        />
-                                    </label>
-                                    <label htmlFor="raid-start" className="full-width">
-                                        <h4>Start date</h4>
-                                        <input
-                                            id="raid-start"
-                                            type="datetime-local"
-                                            placeholder=""
-                                            value={startDate}
-                                            onChange={(e) => setStartDate(e.target.value)}
-                                        />
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <label
-                                        htmlFor="campaign-caption"
-                                        className="full-width"
-                                    >
-                                        <h4>Campaign Caption</h4>
-
-                                        <textarea
-                                            id="campaign-caption"
-                                            placeholder=""
-                                            onChange={(e) => setCompaignCaption(e.target.value)}
-=======
                                             value={chatPostLink}
                                             onChange={(e) => setChatPostLink(e.target.value)}
->>>>>>> f54a70cc43a84c6f3a12a2cacdee128e7ffdb2b0
                                         />
                                     </label>
                                 </div>
