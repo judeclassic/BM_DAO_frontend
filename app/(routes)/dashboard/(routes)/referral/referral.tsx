@@ -1,0 +1,131 @@
+"use client"
+import HeadingCard from '@/app/(routes)/dashboard/_components/heading-card'
+import { CopyIcon } from '@/app/(routes)/dashboard/_components/svg-icons'
+import { IGetReferral, IMultipleUser, IUser } from '@/lib/types/user/user.interface'
+import { Container, CopyContainer, StatsContainer } from '@/app/styles/dashboard.style'
+import { Left, MRow, MTable, Right, TBody, THead, TRow, Table, Top, UserImage, Wrapper } from '@/app/styles/referral.style'
+import Image from 'next/image'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { getUserReferral } from '@/lib/api/user'
+import { useUserStore } from '@/lib/store/user'
+
+const Dashboard = () => {
+    const { user } = useUserStore();
+    const [level, setLevel] = useState("1");
+    const [referrals, setReferrals] = useState<IMultipleUser>({
+      total_users: 0,
+      users: [],
+      has_next: false,
+    });
+    const handleLinkCopy = (content: string) => {
+        navigator.clipboard.writeText(content);
+        toast.success("Referral Link copied to clipboard", {
+            position: toast.POSITION.TOP_RIGHT
+        });
+    }
+    const fetchReferral = (level: number) => {
+        getUserReferral({
+          level: level,
+          page: 1,
+          limit: 10,
+        })
+        .then((response) => {
+          if (response.status) {
+            setReferrals(response.data);
+          }
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+      }
+    useEffect(() => {
+      fetchReferral(1);
+    }, [level])
+  return (
+    <Container>
+      <HeadingCard heading={"Referral"} />
+      <Wrapper>
+        <Left>
+            <Top>
+                <h2>Referrals</h2>
+                <select value={level} onChange={(e) => setLevel(e.target.value)}>
+                    <option value="1">Level 1</option>
+                    <option value="2">Level 2</option>
+                    <option value="3">Level 3</option>
+                </select>
+            </Top>
+            <Table>
+                <THead>
+                    <p>Referral</p>
+                    <p>Level</p>
+                    <p>Earnings</p>
+                </THead>
+                <TBody>
+                    {referrals.users.map((referral, i) => (
+                        <TRow key={i}>
+                            <p>
+                                <UserImage>
+                                    <Image src={"/user-1.png"} alt="user"  objectFit="cover" objectPosition="center" layout="fill" />
+                                </UserImage>
+                                <span>{referral?.personal?.name}</span>
+                            </p>
+                            <p>Level {level}</p>
+                            <p>${referral?.peripheral?.referral?.analytics?.total_earned}</p>
+                        </TRow>
+                    ))}
+                </TBody>
+            </Table>
+            <MTable>
+              {referrals.users.map((val, i: number) => (
+                  <MRow key={i}>
+                      <div>
+                          <p>{val.personal.name}</p>
+                          <p>Level {level}</p>
+                      </div>
+                      <p>${val?.peripheral.referral?.analytics?.total_earned}</p>
+                  </MRow>
+              ))}
+            </MTable>
+        </Left>
+        <Right>
+          <CopyContainer>
+            <p className='label'>Share your referral link</p>
+            <div>
+              {/* <p>{window?.location?.host}/register?code={user.referal?.myReferalCode ?? ""}</p> */}
+              <p>{user?.peripheral?.referral?.my_referral_code}</p>
+              <button onClick={() => handleLinkCopy(`${user?.peripheral?.referral?.my_referral_code}` ?? "")}>
+                  <CopyIcon />
+                  <span>Copy</span>
+              </button>
+            </div>
+          </CopyContainer>
+          <h2>Referrals</h2>
+          <StatsContainer>
+            <div>
+              <p>Referral Level</p>
+              <p>Level {level}</p>
+            </div>
+            <div>
+              <p>Total Referrals</p>
+              <p>{user?.peripheral?.referral?.analytics?.total_amount}</p>
+            </div>
+            <div>
+              <p>Total Earnings</p>
+              <p>${user?.peripheral?.referral?.analytics?.total_earned} ({Number(user?.peripheral?.referral?.analytics?.total_earned ?? "0") * 1000 } BMT)</p>
+            </div>
+          </StatsContainer>
+          <h2>How Referral works</h2>
+          <p>Each level of the referral program will offer different reward percentages for referral earnings. When a new member signs up using the referral link or code, they will be associated with the referring member and placed in the corresponding level of hte referral program.</p>
+          <ul>
+            <li>Level 1: Earning 20% of the first subscription fee generated by direct referrals.</li>
+            <li>Level 2: Earning 10% of the first subscription fee generated by direct referrals.</li>
+            <li>Level 3: Earning 10% of the first subscription fee generated by direct referrals.</li>
+          </ul>
+        </Right>
+      </Wrapper>
+    </Container>
+  )
+}
+
+export default Dashboard;

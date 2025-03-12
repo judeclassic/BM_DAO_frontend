@@ -295,6 +295,7 @@ export const UploadedDocContainer = styled.div`
         font-size: 1rem;
         font-weight: 600;
         margin: 1.25rem 0 0.85rem;
+        padding: 50px;
     }
 `;
 
