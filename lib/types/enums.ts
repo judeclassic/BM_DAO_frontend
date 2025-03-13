@@ -10,4 +10,4 @@ export enum WorkStatusEnum {
     FREE = 'FREE'
 }
 
-export type ISubSciptionStatus = 'EXPIRED' | 'ACTIVE';
+export type SubScriptionStatus = 'Expired' | 'Active';

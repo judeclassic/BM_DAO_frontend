@@ -8,12 +8,12 @@ export const subscribeForRaiderAccount = (request: IRaiderSocials): Promise<IRes
 }
 
 export const unsubscribeForRaiderAccount = (): Promise<IResponse<IRaiderAccount>> => {
-    return axiosInstance().post("/user/worker/raider/service/unsubscribe")
+    return axiosInstance().post("/user/personal/account/raider/unsubscribe")
         .then(handleRequest<IRaiderAccount>).catch(handleError);
 }
 
 export const getRaiderAccount = () => {
-    return axiosInstance().get("/user/worker/raider/service/all?page=1&limit=20")
+    return axiosInstance().get("/user/personal/account/raider/")
         .then(handleRequest<IRaiderAccount>).catch(handleError);
 }
 

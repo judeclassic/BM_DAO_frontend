@@ -1,13 +1,13 @@
 import { useRouter } from 'next/navigation';
-import * as API from '../../api/raider/client-task';
+import * as API from '../../api/client/client-task';
 import { toast } from 'react-toastify';
 import { useUserStore } from '@/lib/store/user';
 import { useRaiderTaskStore } from '@/lib/store/client/raider';
-import { ICreateRaidTask, IGetTask, IRaiderTask } from '@/lib/types/raider/task.interface';
+import { ICreateRaidTask } from '@/lib/types/raider/task.interface';
 import { IPaginatedRequest } from '@/lib/types/pagination';
 import { useState } from 'react';
 
-export const useClientRaidTaskFeature = () => {
+export const useClientRaiderTaskFeature = () => {
     const [ page, setPage ] = useState(1);
     const router = useRouter();
     const { isLoading, setLoading } = useUserStore();

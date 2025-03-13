@@ -1,4 +1,4 @@
-import { ServiceAccountTypeEnum, SubScriptionStatus } from "../enums";
+import { ServiceAccountTypeEnum } from "../enums";
 
 export interface IAnalytic {
     available_task: number;
@@ -6,7 +6,7 @@ export interface IAnalytic {
     completed_task: number;
 }
 
-export type IRaiderSocials = {
+export type IModeratorSocials = {
     twitter?: string,
     reddit?: string,
     tiktok?: string,
@@ -17,22 +17,22 @@ export type IRaiderSocials = {
     youtube?: string,
 }
 
-export interface IRaiderAccount {
+export interface IModeratorAccount {
     _id?: string;
     account_type: ServiceAccountTypeEnum;
     subscription_date: number;
-    subscription_status: 'Active' | 'Expired';
     user_id: string;
     updated_at?: Date;
     created_at?: Date;
+    subscription_status: 'Active' | 'Expired';
     is_verified?: boolean;
     work_timeout: number;
     analytics: IAnalytic;
-    social_handles: IRaiderSocials;
+    handles: IModeratorSocials;
 }
 
-export interface IMultipleRaiderAccount {
-    raider_accounts: IRaiderAccount[],
-    total_raider_accounts: number,
+export interface IMultipleModeratorAccount {
+    moderator_accounts: IModeratorAccount[],
+    total_moderator_accounts: number,
     has_next: boolean
 }

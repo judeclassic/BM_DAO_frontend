@@ -1,4 +1,4 @@
-import { ISubSciptionStatus, ServiceAccountTypeEnum } from "./enums";
+import { SubScriptionStatus, ServiceAccountTypeEnum } from "./enums";
 import { IAnalytic } from "./raider/raider.interface";
 
 export interface IModeratorService {
@@ -7,7 +7,7 @@ export interface IModeratorService {
   userId: string;
   updatedAt?: Date;
   createdAt?: Date;
-  subscriptionStatus: ISubSciptionStatus;
+  subscriptionStatus: SubScriptionStatus;
   isVerified?: boolean;
   work_timeout: number;
   analytics: IAnalytic;

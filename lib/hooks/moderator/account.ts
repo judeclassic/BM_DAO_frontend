@@ -1,25 +1,26 @@
 import { useRouter } from 'next/navigation';
-import * as API from '../../api/raider/account';
+import * as API from '../../api/moderator/account';
 import { toast } from 'react-toastify';
 import { useUserStore } from '../../store/user';
-import { useRaiderAccountStore } from '../../store/account/raider/raider';
-import { IRaiderSocials } from '@/lib/types/raider/raider.interface';
+import { useModeratorAccountStore } from '../../store/account/moderator/moderator';
+import { IModeratorSocials } from '@/lib/types/moderator/moderator.interface';
 import { useCallback } from 'react';
 
 
-export const useRaiderAccountFeature = () => {
-    const { setLoading, user, isLoading } = useUserStore();
-    const { raiderAccount ,setRaiderAccount } = useRaiderAccountStore();
+export const useModeratorAccountFeature = () => {
+    const { setLoading, isLoading } = useUserStore();
+    const { moderatorAccount ,setModeratorAccount } = useModeratorAccountStore();
+    const { user } = useUserStore();
     const router = useRouter();
 
-    const subscribeRaiderAccount = async (request: IRaiderSocials) => {
+    const subscribeModeratorAccount = async (request: IModeratorSocials) => {
         try {
             if (!localStorage.getItem("bmdao-token")) router.replace( `/auth/login?redirect_url=${window.location.href}`);
 
             setLoading(true);
-            const response = await API.subscribeForRaiderAccount(request);
+            const response = await API.subscribeForModeratorAccount(request);
             if (response.status) {
-                setRaiderAccount(response.data);
+                setModeratorAccount(response.data);
                 setLoading(false);
                 return;
             }
@@ -32,14 +33,14 @@ export const useRaiderAccountFeature = () => {
         }
     }
 
-    const getRaiderAccount = async () => {
+    const getModeratorAccount = async () => {
         try {
             if (!localStorage.getItem("bmdao-token")) router.replace( `/auth/login?redirect_url=${window.location.href}`);
 
             setLoading(true);
-            const response = await API.getRaiderAccount();
+            const response = await API.getModeratorAccount();
             if (response.status) {
-                setRaiderAccount(response.data);
+                setModeratorAccount(response.data);
                 setLoading(false);
                 return;
             }
@@ -52,14 +53,14 @@ export const useRaiderAccountFeature = () => {
         }
     }
 
-    const updateSocialProfile = async (request: IRaiderSocials) => {
+    const updateSocialProfile = async (request: IModeratorSocials) => {
         try {
             if (!localStorage.getItem("bmdao-token")) router.replace( `/auth/login?redirect_url=${window.location.href}`);
 
             setLoading(true);
             const response = await API.updateUserSocials(request);
             if (response.status) {
-                setRaiderAccount(response.data);
+                setModeratorAccount(response.data);
                 setLoading(false);
                 return;
             }
@@ -72,22 +73,23 @@ export const useRaiderAccountFeature = () => {
         }
     }
 
-    const isRaiderSubscribed = useCallback(() => {
-        if (!user?.setting.subscription.raider) {
+    const isModeratorSubscribed = useCallback(() => {
+        if (!user?.setting.subscription.moderator) {
             return false;
         }
-        if (raiderAccount && raiderAccount.subscription_status === 'Expired') {
+        if (moderatorAccount && moderatorAccount.subscription_status === 'Expired') {
             return false;
         }
         return true;
-    }, [user, raiderAccount])
+    }, [user, moderatorAccount])
+
 
     return {
         isLoading,
-        raiderAccount,
-        isRaiderSubscribed,
-        subscribeRaiderAccount,
-        getRaiderAccount,
+        moderatorAccount,
+        subscribeModeratorAccount,
+        getModeratorAccount,
+        isModeratorSubscribed,
         updateSocialProfile
     };
 }

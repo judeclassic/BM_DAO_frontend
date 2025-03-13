@@ -1,8 +1,5 @@
 import { IAnalytics } from "../analytics/analytic.interface";
-import { IChatterService } from "../chatter.interace";
-import { IModeratorService } from "../moderator.interface";
 import { IPaginatedRequest } from "../pagination";
-import { IRaiderService } from "../raider/raider.interface";
 
 export enum AccountTypeEnum {
     user = 'user',
@@ -33,6 +30,7 @@ export type IWallet = {
 
 export type ISubscription = {
 	raider: string;
+	moderator: string;
 }
 
 export type IPersonal = {

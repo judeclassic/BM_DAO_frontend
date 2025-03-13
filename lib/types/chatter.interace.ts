@@ -1,4 +1,4 @@
-import { ServiceAccountTypeEnum, ISubSciptionStatus } from "./enums";
+import { ServiceAccountTypeEnum, SubScriptionStatus } from "./enums";
 
 export interface IAnalytic {
     availableTask: number;
@@ -23,7 +23,7 @@ export interface IChatterService {
     userId: string;
     updatedAt?: Date;
     createdAt?: Date;
-    subscriptionStatus: ISubSciptionStatus;
+    subscriptionStatus: SubScriptionStatus;
     isVerified?: boolean;
     analytics: IAnalytic;
     handles: IChatterSocialHandle;
