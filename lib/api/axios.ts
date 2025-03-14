@@ -1,7 +1,7 @@
 import axios from "axios"
 import IResponse from "../types/response";
-export const baseURL = `http://localhost:8080/api`
-// export const baseURL = `https://api.bmdao.xyz/api`
+// export const baseURL = `http://localhost:8080/api`
+export const baseURL = `https://api.bmdao.xyz/api`
 
 export const axiosInstance = () => {
     const token = typeof window !== "undefined" && localStorage.getItem("bmdao-token");
